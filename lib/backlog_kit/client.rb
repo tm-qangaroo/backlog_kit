@@ -148,7 +148,11 @@ module BacklogKit
     end
 
     def host
-      "https://#{space_id}.backlog.jp"
+      if space_id.scan('.').empty?
+        "https://#{space_id}.backlog.jp"
+      else
+        "#{space_id}"
+      end
     end
 
     def request_headers
