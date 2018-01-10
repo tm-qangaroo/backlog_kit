@@ -148,10 +148,10 @@ module BacklogKit
     end
 
     def host
-      if space_id.scan('.').empty?
+      if space_id.scan('.').empty? || @use_ssl.nil?
         "https://#{space_id}.backlog.jp"
       else
-        "#{space_id}"
+        "#{@use_ssl ? 'https' : 'http'}://#{space_id}"
       end
     end
 
@@ -168,6 +168,7 @@ module BacklogKit
     def request_path(path)
       path = "/api/v2/#{URI.escape(path)}"
       path += "?apiKey=#{URI.escape(@api_key.to_s)}" if @api_key
+      path.prepend "/backlog" unless @use_ssl.nil?
       path
     end
   end
