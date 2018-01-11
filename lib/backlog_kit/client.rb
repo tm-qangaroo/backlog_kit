@@ -148,10 +148,11 @@ module BacklogKit
     end
 
     def host
-      if space_id.scan('.').empty? || @use_ssl.nil?
-        "https://#{space_id}.backlog.jp"
+      @service_type ||= "asp_jp"
+      if space_id.scan('.').empty? || @service_type.include?("asp")
+        "https://#{space_id}.backlog.#{@service_type == 'asp_com' ? 'com' : 'jp'}"
       else
-        "#{@use_ssl ? 'https' : 'http'}://#{space_id}"
+        "#{@service_type == "ssl" ? 'https' : 'http'}://#{space_id}"
       end
     end
 
@@ -168,7 +169,7 @@ module BacklogKit
     def request_path(path)
       path = "/api/v2/#{URI.escape(path)}"
       path += "?apiKey=#{URI.escape(@api_key.to_s)}" if @api_key
-      path.prepend "/backlog" unless @use_ssl.nil?
+      path.prepend "/backlog" unless @service_type.nil? || @service_type.include?("asp")
       path
     end
   end
